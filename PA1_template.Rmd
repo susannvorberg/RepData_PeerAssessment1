@@ -30,7 +30,6 @@ dataset = na.omit(dataset)
 #Compute the total number of steps per day
 total_nr_steps = sapply(unique(dataset$date), function(x){sum(dataset[dataset$date == x,'steps'])})
 
-
 #plotting
 ggplot(data.frame(total_nr_steps)) + 
     geom_histogram(aes(x=total_nr_steps)) + 
@@ -129,15 +128,16 @@ average_nr_steps_per_interval$weekday = as.numeric(sapply(
 #plotting
 plot_df          = stack(average_nr_steps_per_interval, select=c(weekend, weekday))
 plot_df$interval = average_nr_steps_per_interval$interval
-ggplot(plot_df, aes(x=interval, y=values, group=ind)) + 
+ggplot(plot_df, aes(x=interval, y=values, group=ind, colour=ind)) + 
     geom_point() +
     geom_line() +
+    geom_line(stat = "hline", yintercept = "mean")+
     facet_wrap(~ ind) +  
     ggtitle("Average number of steps per interval for all dates") + 
     labs(y="number of steps (avg)") + 
     scale_x_discrete(breaks=plot_df$interval[seq(1,nr_intervals,50)])
 ```
 
-We can see that the maximum number of steps is higher on weekdays than on weekends. However, on weekends the amount of intervals with intermediate step numbers (say, 100-200) is higher compared to weekdays.
+We can see that the maximum number of steps is higher on weekdays than on weekends. However, on weekends the amount of intervals with intermediate step numbers (say, 100-200) is higher compared to weekdays. This fact is also visible when comparing the mean number of steps on weekends and weekdays (horizontal lines in plot): it is higher on weekends (`r round(mean(average_nr_steps_per_interval$weekend), digits=2)`) than on weekdays (`r round(mean(average_nr_steps_per_interval$weekday), digits=2)`).
 
 
